@@ -1,0 +1,5 @@
+{
+  "name": "Business Card Generator",
+  "description": "An intuitive web application to design and generate professional business cards. Input your details, choose a template, and download your card as a PNG or PDF instantly.",
+  "requestFramePermissions": []
+}
