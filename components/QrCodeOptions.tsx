@@ -1,6 +1,7 @@
 import React from 'react';
 import { QrCodeSettings, QrCodeErrorCorrectionLevel } from '../types';
 import ColorPicker from './ColorPicker';
+import { hapticEngine } from '../utils/haptics';
 
 interface QrCodeOptionsProps {
     settings: QrCodeSettings;
@@ -8,45 +9,52 @@ interface QrCodeOptionsProps {
 }
 
 const ERROR_CORRECTION_LEVELS: { value: QrCodeErrorCorrectionLevel, label: string }[] = [
-    { value: 'L', label: 'Low' },
-    { value: 'M', label: 'Medium' },
-    { value: 'Q', label: 'Quartile' },
-    { value: 'H', label: 'High' },
+    { value: 'L', label: 'Low (7%)' },
+    { value: 'M', label: 'Medium (15%)' },
+    { value: 'Q', label: 'Quartile (25%)' },
+    { value: 'H', label: 'High (30%)' },
 ];
 
 const QrCodeOptions: React.FC<QrCodeOptionsProps> = ({ settings, onChange }) => {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3 p-3.5 bg-gray-50/80 rounded-2xl border border-gray-200/70">
             <div>
-                <label htmlFor="qr-text" className="block text-sm font-medium text-gray-700 mb-1">URL or Text</label>
+                <label htmlFor="qr-text" className="block text-xs font-semibold text-gray-600 mb-1">
+                    Encoded Website, vCard or Link
+                </label>
                 <input
                     type="text"
                     id="qr-text"
                     value={settings.text}
                     onChange={(e) => onChange('text', e.target.value)}
-                    placeholder="https://your-website.com"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                    placeholder="https://your-portfolio.com"
+                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
             </div>
             
             <ColorPicker 
-                label="QR Code Color"
+                label="QR Pattern Color"
                 color={settings.color}
                 onChange={(color) => onChange('color', color)}
             />
 
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Error Correction</label>
-                <div className="flex space-x-1 rounded-lg bg-gray-200 p-1">
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    Error Correction Level
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 p-1 bg-gray-200/70 rounded-xl">
                     {ERROR_CORRECTION_LEVELS.map(({ value, label }) => (
                         <button
                             key={value}
                             type="button"
-                            onClick={() => onChange('errorCorrectionLevel', value)}
-                            className={`w-full rounded-md py-1 px-2 text-xs font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                            onClick={() => {
+                                hapticEngine.triggerClick(200);
+                                onChange('errorCorrectionLevel', value);
+                            }}
+                            className={`rounded-lg py-1 px-1.5 text-[11px] font-semibold transition-all ${
                                 settings.errorCorrectionLevel === value
-                                    ? 'bg-white text-blue-600 shadow'
-                                    : 'bg-transparent text-gray-600 hover:bg-white/60'
+                                    ? 'bg-white text-blue-600 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                             }`}
                         >
                             {label}
